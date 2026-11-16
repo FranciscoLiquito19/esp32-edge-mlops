@@ -1,0 +1,25 @@
+# ESP-IDF build outputs
+firmware/build/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/managed_components/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Data and models are versioned with DVC, not git
+training/data/raw/
+training/data/processed/
+training/models/*.tflite
+training/models/*.onnx
+training/models/*.pt
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
