@@ -1,0 +1,14 @@
+# Target: Freenove ESP32-S3-WROOM CAM (ESP32-S3-WROOM-1 N8R8)
+CONFIG_IDF_TARGET="esp32s3"
+
+# 8 MB flash with a custom partition table (two OTA slots + model partition)
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# 8 MB octal PSRAM. IGNORE_NOTFOUND lets the board boot and report the
+# problem instead of crashing if the module turns out to have no PSRAM.
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_IGNORE_NOTFOUND=y

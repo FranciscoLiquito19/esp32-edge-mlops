@@ -63,7 +63,7 @@ Defined in [`firmware/partitions.csv`](../firmware/partitions.csv).
 | phy_init | data | 4 KB | RF calibration |
 | ota_0 | app | 2.5 MB | Firmware slot A |
 | ota_1 | app | 2.5 MB | Firmware slot B |
-| model | data (0x40) | 2 MB | Quantised model + manifest |
+| model | custom (0x40) | 2 MB | Quantised model + manifest |
 
 ## Host side (PC)
 
