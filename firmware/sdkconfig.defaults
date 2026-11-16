@@ -12,3 +12,14 @@ CONFIG_SPIRAM=y
 CONFIG_SPIRAM_MODE_OCT=y
 CONFIG_SPIRAM_SPEED_80M=y
 CONFIG_SPIRAM_IGNORE_NOTFOUND=y
+
+# Performance
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+
+# The main task runs the camera, TLS and the interpreter.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
+
+# Use the JPEG decoder shipped with esp_jpeg instead of the copy in ROM, so the
+# device runs the same decoder source that can be compiled on a PC (ADR 0005).
+CONFIG_JD_USE_ROM=n

@@ -1,0 +1,29 @@
+menu "Power and wake-up"
+
+    config APP_PIR_GPIO
+        int "PIR sensor output GPIO"
+        range 0 21
+        default 14
+        help
+            Must be an RTC-capable GPIO (0-21 on the ESP32-S3) that the camera
+            does not use, so that it can wake the chip from deep sleep.
+            See docs/HARDWARE.md.
+
+    config APP_PIR_WARMUP_S
+        int "PIR warm-up time after power-on (seconds)"
+        range 0 300
+        default 45
+        help
+            The PIR output is unreliable right after power-up. The device
+            ignores it for this long after a cold boot.
+
+    config APP_PIR_RECHECK_S
+        int "Re-check interval while the PIR output stays high (seconds)"
+        range 1 60
+        default 3
+        help
+            After an event the PIR output can stay high for several seconds.
+            Instead of staying awake, the device sleeps and wakes on a timer
+            to check whether the output has dropped before re-arming it.
+
+endmenu

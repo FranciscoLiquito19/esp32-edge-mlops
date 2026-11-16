@@ -1,0 +1,40 @@
+menu "Uplink (Wi-Fi and ingest service)"
+
+    config APP_WIFI_SSID
+        string "Wi-Fi SSID"
+        default ""
+        help
+            Leave empty to run without a network: frames are captured,
+            measured and discarded. Set with `idf.py menuconfig`; the value
+            lives in sdkconfig, which is not committed.
+
+    config APP_WIFI_PASSWORD
+        string "Wi-Fi password"
+        default ""
+
+    config APP_INGEST_URL
+        string "Ingest endpoint URL"
+        default ""
+        help
+            Full URL of the events endpoint, for example
+            http://192.168.1.10:8000/v1/events. https:// URLs are verified
+            against the built-in certificate bundle.
+
+    config APP_DEVICE_TOKEN
+        string "Device token"
+        default ""
+        help
+            Sent as a Bearer token. Must match the token the ingest service
+            was started with.
+
+    config APP_WIFI_CONNECT_TIMEOUT_MS
+        int "Wi-Fi connect timeout (ms)"
+        range 1000 60000
+        default 10000
+
+    config APP_HTTP_TIMEOUT_MS
+        int "HTTP request timeout (ms)"
+        range 1000 60000
+        default 10000
+
+endmenu

@@ -1,0 +1,10 @@
+# Overlay for the QEMU emulator (tools/qemu_bench.sh). Not for the real board.
+#
+# QEMU does not emulate octal PSRAM or the ESP32-S3 vector instructions used by
+# the optimised neural-network kernels, and has no camera, sensor or Wi-Fi.
+CONFIG_SPIRAM=n
+CONFIG_NN_ANSI_C=y
+CONFIG_APP_MODE_BENCH=y
+CONFIG_APP_BENCH_RUNS=1
+CONFIG_APP_BENCH_DUMP_GRAY=y
+CONFIG_APP_TENSOR_ARENA_KB=160

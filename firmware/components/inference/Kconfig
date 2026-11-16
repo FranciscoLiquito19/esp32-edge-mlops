@@ -1,0 +1,12 @@
+menu "Inference"
+
+    config APP_TENSOR_ARENA_KB
+        int "Tensor arena size (KB)"
+        range 32 4096
+        default 512
+        help
+            Working memory for TensorFlow Lite Micro. Allocated from PSRAM when
+            available, otherwise from internal RAM. The arena actually used is
+            logged at start-up so this can be trimmed.
+
+endmenu

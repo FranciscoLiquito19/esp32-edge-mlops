@@ -1,0 +1,49 @@
+menu "Application"
+
+    choice APP_MODE
+        prompt "Operating mode"
+        default APP_MODE_COLLECT
+
+        config APP_MODE_COLLECT
+            bool "Collect: upload every capture (dataset building)"
+
+        config APP_MODE_INFER
+            bool "Infer: classify on the device, upload what matters"
+
+        config APP_MODE_BENCH
+            bool "Bench: run the model on built-in test images and print results"
+            help
+                No camera, no sensor, no network. Used on the emulator and on
+                the board to measure latency and check that the device gives
+                the same answers as the PC.
+    endchoice
+
+    config APP_INFER_UPLOAD_BELOW_PCT
+        int "Infer mode: also upload the image when confidence is below (percent)"
+        depends on APP_MODE_INFER
+        range 0 100
+        default 70
+        help
+            Low-confidence captures are the most useful ones to label next.
+
+    config APP_INFER_SAMPLE_EVERY
+        int "Infer mode: upload every Nth image regardless of the result"
+        depends on APP_MODE_INFER
+        range 0 1000
+        default 10
+        help
+            A random-ish sample of what the device sees, used to detect drift.
+            0 disables sampling.
+
+    config APP_BENCH_RUNS
+        int "Bench mode: timed runs per image"
+        depends on APP_MODE_BENCH
+        range 1 100
+        default 5
+
+    config APP_BENCH_DUMP_GRAY
+        bool "Bench mode: print the preprocessed image as hex"
+        depends on APP_MODE_BENCH
+        default n
+
+endmenu

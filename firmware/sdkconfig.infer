@@ -1,0 +1,2 @@
+# Overlay: classify on the device (see README, "Operating modes").
+CONFIG_APP_MODE_INFER=y

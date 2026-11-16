@@ -1,0 +1,17 @@
+menu "Capture"
+
+    config APP_CAPTURE_WARMUP_FRAMES
+        int "Frames to discard before keeping one"
+        range 0 10
+        default 2
+        help
+            The first frames after the sensor starts are taken before
+            auto-exposure settles. More frames give a better picture and a
+            longer wake time.
+
+    config APP_CAPTURE_JPEG_QUALITY
+        int "JPEG quality (lower is better, 0-63)"
+        range 4 63
+        default 12
+
+endmenu
