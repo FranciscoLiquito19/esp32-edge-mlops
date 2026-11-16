@@ -1,5 +1,5 @@
-# ESP-IDF build outputs
-firmware/build/
+# ESP-IDF build outputs and local configuration (sdkconfig holds Wi-Fi credentials)
+firmware/build*/
 firmware/sdkconfig
 firmware/sdkconfig.old
 firmware/managed_components/
@@ -9,14 +9,20 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.pytest_cache/
+.ruff_cache/
 .ipynb_checkpoints/
 
-# Data and models are versioned with DVC, not git
+# Data and models are versioned with DVC, not git.
+# (DVC adds its own entries for pipeline outputs.)
 training/data/raw/
 training/data/processed/
 training/models/*.tflite
-training/models/*.onnx
-training/models/*.pt
+training/models/*.keras
+training/models/*.bin
+
+# Images received by a local ingest service
+server/data/
 
 # Editors / OS
 .vscode/

@@ -1,53 +1,42 @@
 # Roadmap
 
-Each milestone ends with something that runs on the board and a commit that
-updates this file.
+Each milestone ends with something that runs and a commit that updates this
+file. ✅ done · 🟡 written and verified without hardware, waiting for the board · ⬜ not started
 
-## M0 — Board bring-up
-- Toolchain installed, firmware builds locally and in CI.
-- Firmware reports chip, flash size, PSRAM size and partition table at boot.
-- PSRAM read/write self-test passes.
+## 🟡 M0 — Board bring-up
+- ✅ Firmware builds locally and in CI.
+- ✅ Reports chip, flash, PSRAM and partition table; PSRAM self-test (checked in the emulator).
+- ⬜ First boot on the real board: 8 MB flash, 8 MB PSRAM, `M0 RESULT: PASS`.
 
-**Done when:** serial log confirms 8 MB flash, 8 MB PSRAM and the custom
-partition table.
+## 🟡 M1 — Wake, capture, upload
+- ✅ PIR on GPIO14 wakes from deep sleep; warm-up and re-check timers.
+- ✅ Camera captures a 1024×768 JPEG; Wi-Fi joins in parallel.
+- ✅ One HTTP POST per event to the ingest service; timings in the metadata.
+- ✅ Ingest service with local and GCS storage, tested; device simulator.
+- ⬜ On the board: walking past the sensor produces an image on the PC.
+- ⬜ Measure wake → uploaded time.
 
-## M1 — Wake, capture, store
-- PIR on an RTC GPIO wakes the chip from deep sleep.
-- Camera captures a JPEG; it is saved to SD with a JSON sidecar
-  (timestamp, wake reason, boot count, capture time).
-- Wake → saved time measured.
+## 🟡 M2 — Dataset
+- ✅ `edgeml.ingest` pulls new captures into `data/raw/unlabeled/`.
+- ✅ Group-wise split, preprocessing identical to the device, DVC pipeline.
+- ⬜ Collect and label real captures; tag dataset v1.
 
-**Done when:** walking past the sensor produces a file on the SD card and the
-board goes back to sleep.
+## 🟡 M3 — Train and quantise
+- ✅ Model, training, int8 quantisation, evaluation gate, report (tested on synthetic images).
+- ⬜ Train on dataset v1; float vs int8 confusion matrices.
+- ⬜ ESP-DL comparison (ADR 0003).
 
-## M2 — Dataset
-- `ingest.py` copies captures from the SD card into a dataset folder.
-- Labels: person / animal / nothing, reviewed by hand.
-- DVC initialised; first dataset version tagged.
+## 🟡 M4 — Inference on the device
+- ✅ Model package format, validation on the device, TFLite Micro integration.
+- ✅ Bench mode; in the emulator the device matches the PC (same classes,
+  runtime outputs within 1 int8 step, preprocessing within 2 grey levels).
+- ⬜ On the board: latency with the optimised kernels, RAM, wake → decision time.
 
-**Done when:** `dvc pull` on a clean clone reproduces dataset v1.
-
-## M3 — Train and quantise
-- Small CNN trained on PC; float32 baseline evaluated.
-- int8 post-training quantisation; accuracy drop measured.
-- Runtime choice settled (ADR 0003).
-
-**Done when:** evaluation report with confusion matrices for float and int8.
-
-## M4 — Inference on the device
-- Model loaded from the `model` partition and validated.
-- Latency, RAM use and wake → decision time measured on the board.
-- On-device predictions match PC predictions on the same images.
-
-**Done when:** README results table has the M4 rows filled in.
-
-## M5 — OTA with rollback
+## ⬜ M5 — OTA with rollback
 - Firmware and model updated over Wi-Fi.
 - A deliberately broken firmware rolls back automatically.
 
-**Done when:** rollback demonstrated and documented.
-
-## M6 — Monitoring and polish
-- Telemetry per event; drift report on PC.
-- CI also lints and tests the Python code.
+## ⬜ M6 — Monitoring and polish
+- Drift report from the reported scores and sampled images.
+- Battery operation and deep-sleep current measurement.
 - README final pass: results, demo GIF, lessons learned.
