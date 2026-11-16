@@ -1,0 +1,73 @@
+# Training pipeline. `dvc repro` runs whatever is out of date; `dvc dag` shows the graph.
+stages:
+  dataset:
+    cmd: >-
+      python -m edgeml.dataset --raw data/raw --out data/processed
+      --val-fraction ${dataset.val_fraction} --test-fraction ${dataset.test_fraction}
+      --group-size ${dataset.group_size}
+    deps:
+      - data/raw
+      - edgeml/config.py
+      - edgeml/dataset.py
+      - edgeml/preprocess.py
+    params:
+      - dataset
+    outs:
+      - data/processed/dataset.npz
+      - data/processed/manifest.csv
+    metrics:
+      - data/processed/stats.json:
+          cache: false
+
+  train:
+    cmd: >-
+      python -m edgeml.train --data data/processed/dataset.npz --out models
+      --epochs ${train.epochs} --batch-size ${train.batch_size}
+      --learning-rate ${train.learning_rate} --width ${train.width} --seed ${train.seed}
+    deps:
+      - data/processed/dataset.npz
+      - edgeml/model.py
+      - edgeml/train.py
+    params:
+      - train
+    outs:
+      - models/float.keras
+    metrics:
+      - models/train_metrics.json:
+          cache: false
+
+  quantize:
+    cmd: >-
+      python -m edgeml.quantize --model models/float.keras --data data/processed/dataset.npz --out models
+      --calibration-samples ${quantize.calibration_samples}
+      --max-accuracy-drop ${quantize.max_accuracy_drop} --max-size-bytes ${quantize.max_size_bytes}
+      --seed ${train.seed}
+    deps:
+      - data/processed/dataset.npz
+      - models/float.keras
+      - edgeml/quantize.py
+      - edgeml/tflite_utils.py
+    params:
+      - quantize
+      - train.seed
+    outs:
+      - models/model_int8.tflite
+      - models/eval_report.md:
+          cache: false
+    metrics:
+      - models/eval_report.json:
+          cache: false
+
+  package:
+    cmd: >-
+      python -m edgeml.package --model models/model_int8.tflite --report models/eval_report.json
+      --out models/model.bin --version ${package.version} --name ${package.name}
+    deps:
+      - models/model_int8.tflite
+      - models/eval_report.json
+      - edgeml/package.py
+      - edgeml/manifest.py
+    params:
+      - package
+    outs:
+      - models/model.bin

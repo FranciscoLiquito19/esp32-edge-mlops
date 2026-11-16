@@ -1,0 +1,7 @@
+# Host tooling. Tested with Python 3.13 and TensorFlow 2.21.
+tensorflow-cpu>=2.21,<2.22
+numpy
+pillow
+dvc
+pytest
+ruff

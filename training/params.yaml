@@ -1,0 +1,23 @@
+# Parameters of the training pipeline (dvc.yaml). Change a value, run
+# `dvc repro`, and only the stages that depend on it run again.
+
+dataset:
+  val_fraction: 0.15
+  test_fraction: 0.15
+  group_size: 20        # consecutive captures kept together when splitting
+
+train:
+  epochs: 40
+  batch_size: 32
+  learning_rate: 0.002
+  width: 1.0            # channel multiplier of the network
+  seed: 0
+
+quantize:
+  calibration_samples: 200
+  max_accuracy_drop: 0.02     # gate: int8 may lose at most this much test accuracy
+  max_size_bytes: 1500000     # gate: must leave room in the 2 MB model partition
+
+package:
+  version: 1            # increase for every model that goes to a device
+  name: dataset-v1
