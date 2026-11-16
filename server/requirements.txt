@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+# Only for INGEST_STORAGE=gcs:...
+# google-cloud-storage
+# Tests
+pytest
+httpx
