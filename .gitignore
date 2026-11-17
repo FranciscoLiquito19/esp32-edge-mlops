@@ -3,6 +3,8 @@ firmware/build*/
 firmware/sdkconfig
 firmware/sdkconfig.old
 firmware/managed_components/
+# Resolved per ESP-IDF version (CI uses v5.5, the board v6.1), so not shared.
+firmware/dependencies.lock
 
 # Python
 __pycache__/
