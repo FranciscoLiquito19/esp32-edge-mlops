@@ -1,12 +1,40 @@
 #include "model_store.h"
 
+#include <stdbool.h>
 #include <string.h>
 
+#include "esp_idf_version.h"
 #include "esp_log.h"
 #include "esp_partition.h"
+
+/* ESP-IDF 6.x ships mbedTLS 4, where hashing goes through the PSA Crypto API
+ * and mbedtls/sha256.h is private. ESP-IDF 5.x (mbedTLS 3.6) keeps the legacy
+ * one-shot call, which works there without any PSA configuration. */
+#if ESP_IDF_VERSION_MAJOR >= 6
+#include "psa/crypto.h"
+#else
 #include "mbedtls/sha256.h"
+#endif
 
 static const char *TAG = "model_store";
+
+/* SHA-256 of buf into digest (32 bytes). Returns true on success. */
+static bool sha256(const uint8_t *buf, size_t len, uint8_t *digest)
+{
+#if ESP_IDF_VERSION_MAJOR >= 6
+    /* ESP-IDF already initialises PSA at start-up; the call is idempotent and
+     * keeps this function independent of that ordering. */
+    if (psa_crypto_init() != PSA_SUCCESS) {
+        return false;
+    }
+    size_t out_len = 0;
+    psa_status_t st = psa_hash_compute(PSA_ALG_SHA_256, buf, len, digest,
+                                       MODEL_MANIFEST_SHA256_LEN, &out_len);
+    return st == PSA_SUCCESS && out_len == MODEL_MANIFEST_SHA256_LEN;
+#else
+    return mbedtls_sha256(buf, len, digest, 0) == 0;
+#endif
+}
 
 esp_err_t model_store_open(model_store_t *out)
 {
@@ -46,7 +74,7 @@ esp_err_t model_store_open(model_store_t *out)
 
     const uint8_t *payload = base + MODEL_MANIFEST_SIZE;
     uint8_t digest[MODEL_MANIFEST_SHA256_LEN];
-    if (mbedtls_sha256(payload, out->manifest.payload_size, digest, 0) != 0 ||
+    if (!sha256(payload, out->manifest.payload_size, digest) ||
         memcmp(digest, out->manifest.sha256, sizeof(digest)) != 0) {
         ESP_LOGE(TAG, "Payload SHA-256 mismatch");
         esp_partition_munmap(handle);
