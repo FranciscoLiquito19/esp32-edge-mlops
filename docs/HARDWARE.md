@@ -5,7 +5,7 @@
 | Part | Notes |
 |---|---|
 | Freenove ESP32-S3-WROOM CAM | ESP32-S3-WROOM-1, expected N8R8 (8 MB flash, 8 MB octal PSRAM). The M0 self-test confirms this. |
-| OV2640 camera | Comes with the board, on the DVP connector. |
+| Camera (DVP connector) | Comes with the board. Freenove lists an OV2640, but the unit used here reports an **OV3660** (PID 0x3660). The esp32-camera driver detects either one automatically. |
 | Mini PIR sensor (SR505 / AM312 type) | Wake-up trigger. |
 | USB power supply or power bank | Battery operation comes later (M6). |
 

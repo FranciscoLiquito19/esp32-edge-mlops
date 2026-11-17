@@ -19,7 +19,7 @@ data → train → deploy → monitor loop.
 flowchart LR
     subgraph Device[ESP32-S3 node]
         PIR[PIR] -->|wake| FW[Firmware]
-        CAM[OV2640] --> FW
+        CAM[Camera OV3660] --> FW
     end
     FW -->|HTTP POST: metadata + JPEG| ING[Ingest service]
     ING --> ST[(Local folder or GCS bucket)]
@@ -79,7 +79,7 @@ timed and the timings travel with the event (`t_ms`).
 |---|---|
 | `board` | Pin map, chip/flash/PSRAM report, PSRAM self-test |
 | `power` | Wake reason, PIR pin, deep sleep with PIR or timer wake |
-| `capture` | OV2640 start, warm-up frames, one JPEG frame |
+| `capture` | Camera start (OV3660 on this board), warm-up frames, one JPEG frame |
 | `uplink` | Wi-Fi station, one HTTP POST per event (docs/PROTOCOL.md) |
 | `model_store` | Map the `model` partition, validate the package header and SHA-256 |
 | `inference` | JPEG decode at 1/8, grey + crop, int8 quantise, TFLite Micro |
