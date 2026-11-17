@@ -10,8 +10,9 @@ The goal is not the classifier itself, it is the full lifecycle of a model
 running on a microcontroller, with every trade-off measured.
 
 > **Status:** firmware, ingest service and training pipeline written and
-> verified without hardware (compiler, unit tests, ESP32-S3 emulator). Next:
-> first run on the board. See [docs/ROADMAP.md](docs/ROADMAP.md).
+> verified without hardware (compiler, unit tests, ESP32-S3 emulator). First
+> boot on the board done with ESP-IDF v6.1 (M0 passed). Next: capture and
+> upload on the board (M1). See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## How it works
 
@@ -46,6 +47,19 @@ decisions: [docs/adr/](docs/adr/)
 | Device vs PC preprocessing | ≤ 2 grey levels per pixel (mean 0.45) | same run |
 | Corrupted model package | refused (SHA-256 mismatch), device keeps working | same run, one byte changed |
 | Automated tests | 77 (training 50, server 27) | `pytest` |
+
+### Measured on the board (ESP-IDF v6.1, 2026-11-17)
+
+| What | Value | How |
+|---|---|---|
+| Board self-test | `M0 RESULT: PASS`: 8 MB flash, 8 MB octal PSRAM, 1 MB PSRAM test | serial log, collect mode |
+| Camera | OV3660 detected; 1024×768 JPEG, ~19 KB, init 362 ms + grab 620 ms | same |
+| Model package on the device | synthetic model loaded after SHA-256 check; arena 82 of 512 KB | infer mode, `edgeml.smoke` package |
+| One inference | JPEG decode 70.5 ms, invoke 26.5 ms | same, one frame |
+| Corrupted model package | refused (SHA-256 mismatch), device keeps working | same, last byte flipped |
+
+These are single runs and the model is still the synthetic one, so the
+classification it prints means nothing yet.
 
 The model behind these numbers was trained on **synthetic** images (drawn
 shapes) to exercise the pipeline. It proves the plumbing, not the accuracy.
@@ -89,7 +103,8 @@ python tools/fake_device.py --url http://localhost:8000/v1/events --token change
 
 ### 2. Build and flash the firmware
 
-Requires ESP-IDF v5.5 (the VS Code extension is the easiest install on Windows).
+Requires ESP-IDF v5.5 or v6.1 (the VS Code extension is the easiest install on
+Windows). CI builds with v5.5; the board was validated with v6.1.
 
 ```bash
 cd firmware

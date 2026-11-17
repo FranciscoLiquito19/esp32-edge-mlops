@@ -3,10 +3,11 @@
 Each milestone ends with something that runs and a commit that updates this
 file. ✅ done · 🟡 written and verified without hardware, waiting for the board · ⬜ not started
 
-## 🟡 M0 — Board bring-up
-- ✅ Firmware builds locally and in CI.
+## ✅ M0 — Board bring-up
+- ✅ Firmware builds locally (ESP-IDF v6.1) and in CI (ESP-IDF v5.5).
 - ✅ Reports chip, flash, PSRAM and partition table; PSRAM self-test (checked in the emulator).
-- ⬜ First boot on the real board: 8 MB flash, 8 MB PSRAM, `M0 RESULT: PASS`.
+- ✅ First boot on the real board with ESP-IDF v6.1 (2026-11-17): 8 MB flash, 8 MB
+  octal PSRAM, `M0 RESULT: PASS`. The camera is an OV3660, not an OV2640.
 
 ## 🟡 M1 — Wake, capture, upload
 - ✅ PIR on GPIO14 wakes from deep sleep; warm-up and re-check timers.
